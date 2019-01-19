@@ -1,45 +1,71 @@
+$(document).ready(function() {
+ $('.search_button').on('click', function(){
+ console.log("test")
+ })
+
+
 // create variables
-var topics=["marvel", "dc", "magic", "stargate", "jumanji"];
+var topics = ["marvel", "dc", "magic", "stargate", "jumanji"];
 
-// for loop linking variables to the buttons
-for (var i = 0; i < topics.length; i++) {
-    var buttons = $('<button>'+ topics.text + '</button>')
-    buttons.append('topics');
+// render buttons
+function renderButtons() {
+  $("#topics-view").empty();
+  // for loop linking variables to the buttons
+  for (var i = 0; i < topics.length; i++) {
+  var a = $("<button>");
+  a.addClass("topic");
+  a.attr("data-name", topics[i])
+  a.text(topics[i]);
+  $("#topics-view").append(a);
+  }
 };
-
-// code to create the input box and submit button
-$form.append('<input type="button" value="button">')
+renderButtons();
 
 
-// code to append input to new button
+$("#add-topic").on("click", function(event) {
+  event.preventDefault();
+  var topic =$("#topic-input").val().trim();
+  topics.push(topic);
+  renderButtons();
+});
 
+// code to add GIPHY api key and link database
+var queryURL="https://api.giphy.com/v1/gifs/search?api_key=Z356ER5WAFzIyQ390uh1yeWvOb3Hg8f6&q=" + topics + "&limit=10&offset=2&rating=G&lang=en";
 
-// code to add GIFY api key and link database
-var queryURL="https://api.giphy.com/v1/gifs/trending?api_key=Z356ER5WAFzIyQ390uh1yeWvOb3Hg8f6";
-
-$.ajax({
-    url: queryURL,
-    method: "GET"
-  }).then(function(response) {
-    console.log(response);
-  });
-
-// code to
-
-
-// code to
-//  $.ajax({
+// ajax call
+// $.ajax({
 //     url: "https://api.giphy.com/v1/gifs/trending?api_key=Z356ER5WAFzIyQ390uh1yeWvOb3Hg8f6",
 //     method: "GET"
 //   }).then(function(response) {
 //     console.log(response);
 //   });
 
-$.ajax({
-    url: "https://www.omdbapi.com/?t=romancing+the+stone&y=&plot=short&apikey=trilogy",
+// $(document).on("click", function(){console.log("response")});
+
+ $(".gif").on("click", function() {
+   var state = $(this).attr("data-state");
+   if (state === "still") {
+     $(this).attr("src", $(this).attr("data-animate"));
+     $(this).attr("data-state", "animate");
+   } else {
+     $(this).attr("src", $(this).attr("data-still"));
+     $(this).attr("data-state", "still");
+   }
+ });
+$(document).on("click", ".topic", function() {
+// $(".topic").on("click", function() {
+  $.ajax({
+    url: queryURL,
     method: "GET"
   }).then(function(response) {
-    console.log(response);
+    console.log(response.data);
+    var gifDiv = $("<div class='topics'>");
+    var imgURL = response.id;
+    var image = $("<img>").attr("src", imgURL);
+    gifDiv.append(image);
+    $("#topics-view").prepend(gifDiv);
   });
-
-$(document).on("click", function(){console.log("response")});
+  console.log("test")
+  
+ })
+});
